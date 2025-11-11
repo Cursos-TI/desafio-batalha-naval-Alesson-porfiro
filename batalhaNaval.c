@@ -1,11 +1,11 @@
 #include <stdio.h>
 
 // Desafio Batalha Naval - MateCheck
-// NÍVEL NOVATO — Posicionando Navios no Tabuleiro
+// NÍVEL AVENTUREIRO — Tabuleiro Completo e Navios Diagonais
 // Desenvolvido por Alesson
 
 int main() {
-    // 1️⃣ Declaração do tabuleiro (matriz 10x10)
+    // 1️⃣ Declaração do tabuleiro (10x10)
     int tabuleiro[10][10];
 
     // 2️⃣ Inicializa todas as posições com 0 (representando água)
@@ -15,32 +15,67 @@ int main() {
         }
     }
 
-    // 3️⃣ Declaração dos navios (cada um ocupa 3 posições)
-    int navioHorizontal[3] = {3, 3, 3};
-    int navioVertical[3] = {3, 3, 3};
+    // 3️⃣ Tamanho dos navios
+    int tamanho = 3;
 
-    // 4️⃣ Coordenadas iniciais definidas diretamente no código
-    int linhaHorizontal = 2, colunaHorizontal = 4; // navio horizontal inicia em (2,4)
-    int linhaVertical = 5, colunaVertical = 7;     // navio vertical inicia em (5,7)
+    // 4️⃣ Coordenadas iniciais fixas (sem entrada do usuário)
+    int linhaH = 2, colunaH = 4;   // navio horizontal
+    int linhaV = 5, colunaV = 7;   // navio vertical
+    int linhaD1 = 0, colunaD1 = 0; // navio diagonal 
+    int linhaD2 = 0, colunaD2 = 9; // navio diagonal 
 
-    // 5️⃣ Posicionamento do navio horizontal (da esquerda para a direita)
-    for (int j = 0; j < 3; j++) {
-        tabuleiro[linhaHorizontal][colunaHorizontal + j] = navioHorizontal[j];
-        printf("Navio horizontal posicionado em (%d, %d)\n", linhaHorizontal, colunaHorizontal + j);
-    }
+    // ⚙️ Função auxiliar de verificação de sobreposição (inline)
+    #define LIVRE(i, j) (tabuleiro[i][j] == 0)
 
-    // 6️⃣ Posicionamento do navio vertical (de cima para baixo)
-    for (int i = 0; i < 3; i++) {
-        // Verifica se a posição já está ocupada
-        if (tabuleiro[linhaVertical + i][colunaVertical] == 3) {
-            printf("⚠️  Erro: sobreposição detectada na posição (%d, %d)\n", linhaVertical + i, colunaVertical);
-            return 1; // Encerra o programa
+    // 5️⃣ Posicionamento do navio horizontal 
+    for (int j = 0; j < tamanho; j++) {
+        if (colunaH + j >= 10 || !LIVRE(linhaH, colunaH + j)) {
+            printf("❌ Erro: posição inválida ou sobreposição no navio horizontal.\n");
+            return 1;
         }
-        tabuleiro[linhaVertical + i][colunaVertical] = navioVertical[i];
-        printf("Navio vertical posicionado em (%d, %d)\n", linhaVertical + i, colunaVertical);
+    }
+    for (int j = 0; j < tamanho; j++) {
+        tabuleiro[linhaH][colunaH + j] = 3;
+        printf("✅ Navio horizontal posicionado em (%d, %d)\n", linhaH, colunaH + j);
     }
 
-    // 7️⃣ Exibe o tabuleiro completo
+    // 6️⃣ Posicionamento do navio vertical 
+    for (int i = 0; i < tamanho; i++) {
+        if (linhaV + i >= 10 || !LIVRE(linhaV + i, colunaV)) {
+            printf("❌ Erro: posição inválida ou sobreposição no navio vertical.\n");
+            return 1;
+        }
+    }
+    for (int i = 0; i < tamanho; i++) {
+        tabuleiro[linhaV + i][colunaV] = 3;
+        printf("✅ Navio vertical posicionado em (%d, %d)\n", linhaV + i, colunaV);
+    }
+
+    // 7️⃣ Posicionamento do navio diagonal (da esquerda superior para a direita inferior)
+    for (int i = 0; i < tamanho; i++) {
+        if (linhaD1 + i >= 10 || colunaD1 + i >= 10 || !LIVRE(linhaD1 + i, colunaD1 + i)) {
+            printf("❌ Erro: posição inválida ou sobreposição no navio diagonal.\n");
+            return 1;
+        }
+    }
+    for (int i = 0; i < tamanho; i++) {
+        tabuleiro[linhaD1 + i][colunaD1 + i] = 3;
+        printf("✅ Navio diagonal posicionado em (%d, %d)\n", linhaD1 + i, colunaD1 + i);
+    }
+
+    // 8️⃣ Posicionamento do navio diagonal (da direita superior para a esquerda inferior)
+    for (int i = 0; i < tamanho; i++) {
+        if (linhaD2 + i >= 10 || colunaD2 - i < 0 || !LIVRE(linhaD2 + i, colunaD2 - i)) {
+            printf("❌ Erro: posição inválida ou sobreposição no navio diagonal.\n");
+            return 1;
+        }
+    }
+    for (int i = 0; i < tamanho; i++) {
+        tabuleiro[linhaD2 + i][colunaD2 - i] = 3;
+        printf("✅ Navio diagonal posicionado em (%d, %d)\n", linhaD2 + i, colunaD2 - i);
+    }
+
+    // 9️⃣ Exibe o tabuleiro completo
     printf("\n=== TABULEIRO DE BATALHA NAVAL ===\n\n");
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
